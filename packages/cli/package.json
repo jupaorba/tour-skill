@@ -1,7 +1,7 @@
 {
   "name": "@waypoint-tours/cli",
   "version": "0.1.0",
-  "description": "CLI de Waypoint: descubre vistas, ancla elementos, extrae design tokens y verifica tours guiados antes de publicarlos.",
+  "description": "Turn your app into guided tours with help from your AI agent: discover views, anchor elements, extract design tokens, and verify tours in a real browser.",
   "license": "MIT",
   "author": "Juan Pablo Ortiz Ballna",
   "repository": {

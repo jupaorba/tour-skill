@@ -1,7 +1,7 @@
 {
   "name": "@waypoint-tours/vue",
   "version": "0.1.0",
-  "description": "Plugin y composable de Vue para el runtime de tours guiados de Waypoint.",
+  "description": "Add guided product tours to your Vue 3 app: a plugin plus a one-line useTour() composable. Powered by the Waypoint runtime.",
   "license": "MIT",
   "author": "Juan Pablo Ortiz Ballna",
   "repository": {

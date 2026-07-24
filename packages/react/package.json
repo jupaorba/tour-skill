@@ -1,7 +1,7 @@
 {
   "name": "@waypoint-tours/react",
   "version": "0.1.0",
-  "description": "Provider y hook de React para el runtime de tours guiados de Waypoint.",
+  "description": "Add guided product tours to your React app: a provider plus a one-line useTour() hook. Powered by the Waypoint runtime.",
   "license": "MIT",
   "author": "Juan Pablo Ortiz Ballna",
   "repository": {
