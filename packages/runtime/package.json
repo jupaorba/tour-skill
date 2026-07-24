@@ -1,6 +1,6 @@
 {
   "name": "@waypoint-tours/runtime",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "The engine that paints guided product tours over your web app: focus mask, animated cursor, and tooltips. Framework-agnostic, ~7 KB gzip.",
   "license": "MIT",
   "author": "Juan Pablo Ortiz Ballna",

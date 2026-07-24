@@ -1,6 +1,6 @@
 {
   "name": "@waypoint-tours/react",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Add guided product tours to your React app: a provider plus a one-line useTour() hook. Powered by the Waypoint runtime.",
   "license": "MIT",
   "author": "Juan Pablo Ortiz Ballna",
@@ -29,7 +29,7 @@
     "react-dom": ">=18"
   },
   "dependencies": {
-    "@waypoint-tours/runtime": "0.1.0"
+    "@waypoint-tours/runtime": "0.1.1"
   },
   "devDependencies": {
     "@types/react": "^18.3.3",
