@@ -1,0 +1,358 @@
+---
+import '../styles/global.css';
+import Scene from '../components/Scene.astro';
+
+const packages = [
+  { name: '@waypoint-tours/runtime', desc: 'The engine: focus mask, animated cursor, tooltip and state machine. Zero dependencies except @floating-ui/dom.', tag: '≤18 KB gzip' },
+  { name: '@waypoint-tours/react', desc: 'Provider + hook: <WaypointProvider> and useTour() to start tours from any button.', tag: 'React 18+' },
+  { name: '@waypoint-tours/vue', desc: 'Plugin + useTour() composable for Vue 3. Same API, same runtime.', tag: 'Vue 3.3+' },
+  { name: '@waypoint-tours/cli', desc: 'npx waypoint <command>: discover views, anchor elements, extract design tokens and verify tours in a real browser.', tag: '9 commands' },
+  { name: 'packages/skill', desc: 'The skill your agent (Claude Code, Cursor, any) uses to generate .tour.json files from your code.', tag: 'AI skill' },
+];
+
+const steps = [
+  { n: '01', cmd: 'npx waypoint discover', title: 'Discover your views', body: 'Generates a .tourmap.json with framework, router and the route-to-file map. The agent already knows how your app is wired.' },
+  { n: '02', cmd: 'npx waypoint anchor --view=X', title: 'Anchor the elements', body: 'An idempotent codemod injects data-tour="x.element" into your JSX without breaking anything. Re-run it as many times as you want.' },
+  { n: '03', cmd: 'npx waypoint tokens', title: 'Extract your design tokens', body: 'Reads your real colors and radii and writes tours/theme.css. The overlay looks like your app, not a generic library.' },
+  { n: '04', cmd: 'npx waypoint verify tours/<id>.tour.json', title: 'Verify in a real browser', body: 'Playwright opens your app and walks every step. Catches lost anchors, hidden elements and real submits — up to 3 repair cycles.' },
+  { n: '05', cmd: 'npx waypoint register', title: 'Register the tour', body: 'Updates tours/index.json. The tour is now available in the app for any user to start.' },
+];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Waypoint — Guide your AI through your app</title>
+    <meta
+      name="description"
+      content="An npm skill that creates guided tours of your app views or modules for AI agents. Runtime ≤18 KB, CLI, React and Vue."
+    />
+    <meta property="og:title" content="Waypoint — Guide your AI through your app" />
+    <meta property="og:description" content="An npm skill that generates interactive guided tours for your web app. An agent reads your code and produces the tour; the runtime draws it." />
+    <meta property="og:type" content="website" />
+    <link rel="icon" href={`${import.meta.env.BASE_URL}/favicon.svg`.replace(/\/+/g, '/')} type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <!-- NAV -->
+    <nav class="nav">
+      <div class="nav__inner">
+        <a class="nav__brand" href="#top" aria-label="Waypoint home">
+          <svg class="pin-mini" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <defs>
+              <linearGradient id="ng" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#4f8cff" />
+                <stop offset="1" stop-color="#8b5cf6" />
+              </linearGradient>
+            </defs>
+            <path d="M12 22C7 15.5 4 12.4 4 9a8 8 0 1 1 16 0c0 3.4-3 6.5-8 13Z" fill="url(#ng)" />
+            <circle cx="12" cy="9" r="4" fill="#0a0e1a" />
+            <path d="M12 5.5 13 8.5 16 9 13 9.5 12 12.5 11 9.5 8 9 11 8.5Z" fill="#eef2fb" />
+          </svg>
+          waypoint
+        </a>
+        <div class="nav__links">
+          <a href="#features">What it is</a>
+          <a href="#pipeline">How it works</a>
+          <a href="#packages">Packages</a>
+          <a href="#usar">Use it</a>
+        </div>
+        <a class="nav__cta" href="#install">
+          Get started
+        </a>
+      </div>
+    </nav>
+
+    <main id="top">
+      <!-- HERO -->
+      <header class="hero">
+        <div class="wrap">
+          <div class="hero__stage">
+            <Scene />
+          </div>
+
+          <h1 class="hero__wordmark">
+            wayp<span class="o-ring"></span>int
+          </h1>
+
+          <p class="hero__tagline">
+            <span class="accent-text">Guide</span> your AI through your app.
+          </p>
+
+          <p class="hero__sub">
+            An <span class="npm-badge">npm</span> skill that creates guided tours of your
+            app views or modules for AI agents.
+          </p>
+
+          <div class="hero__actions">
+            <a class="btn btn--primary" href="#install">Get started in 30 s</a>
+            <a class="btn btn--ghost" href="https://github.com/jupaorba/tour-skill" target="_blank" rel="noopener">
+              View on GitHub
+            </a>
+          </div>
+
+          <div class="hero__install" id="install">
+            <div class="copychip">
+              <span class="copychip__cmd"><span class="p">npx</span> waypoint init</span>
+              <button type="button" data-copy="npx waypoint init">Copy</button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- FEATURES (4, del port.png) -->
+      <section class="wrap section" id="features" style="padding-top:0">
+        <div class="features reveal">
+          <div class="feature">
+            <svg class="feature__icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+              <path d="M18 10 6 14v24l12-4 12 4 12-4V10l-12 4-12-4Z" stroke-linejoin="round" />
+              <path d="M18 10v24M30 14v24" />
+              <circle cx="35" cy="21" r="3.5" />
+              <path d="M35 24v4" />
+            </svg>
+            <h3>Guided Tours</h3>
+            <p>Focus mask, animated cursor and step-by-step tooltips.</p>
+          </div>
+          <div class="feature">
+            <svg class="feature__icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+              <rect x="6" y="9" width="36" height="30" rx="3" />
+              <path d="M6 17h36" />
+              <circle cx="11" cy="13" r="1" fill="currentColor" />
+              <circle cx="15" cy="13" r="1" fill="currentColor" />
+              <rect x="11" y="22" width="12" height="12" rx="1.5" />
+              <path d="M27 22h10M27 27h10M27 32h7" />
+            </svg>
+            <h3>Any Framework</h3>
+            <p>React, Vue, Next or vanilla. Router adapters included.</p>
+          </div>
+          <div class="feature">
+            <svg class="feature__icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+              <rect x="10" y="16" width="28" height="22" rx="5" />
+              <path d="M24 10v6M24 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" />
+              <circle cx="18" cy="26" r="2.5" fill="currentColor" />
+              <circle cx="30" cy="26" r="2.5" fill="currentColor" />
+              <path d="M6 24v6M42 24v6" />
+            </svg>
+            <h3>AI-First</h3>
+            <p>An agent reads your code and writes the tour. You review.</p>
+          </div>
+          <div class="feature">
+            <svg class="feature__icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+              <rect x="6" y="10" width="36" height="28" rx="4" />
+              <path d="M14 21l6 5-6 5M25 31h9" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <h3>CLI Friendly</h3>
+            <p>Discover, anchor, verify and register from the terminal.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- PIPELINE -->
+      <section class="wrap section" id="pipeline">
+        <div class="section__head reveal">
+          <span class="eyebrow">The agent pipeline</span>
+          <h2>From your code to a tour, in five steps.</h2>
+          <p>
+            You don't write CSS or overlay logic — that already exists. Your agent
+            walks this pipeline and you decide order, grouping and wording.
+          </p>
+        </div>
+
+        <div class="pipeline">
+          {
+            steps.map((s) => (
+              <article class="step reveal">
+                <div class="step__num">{s.n}</div>
+                <div class="step__body">
+                  <h3>{s.title}</h3>
+                  <p>{s.body}</p>
+                  <p style="margin-top:0.75rem"><code>{s.cmd}</code></p>
+                </div>
+              </article>
+            ))
+          }
+        </div>
+      </section>
+
+      <!-- PACKAGES -->
+      <section class="wrap section" id="packages">
+        <div class="section__head reveal">
+          <span class="eyebrow">The monorepo</span>
+          <h2>Five packages, one idea.</h2>
+          <p>Install only what your stack needs. The runtime is the only required one.</p>
+        </div>
+
+        <div class="packages">
+          {
+            packages.map((p) => (
+              <article class="pkg reveal">
+                <div class="pkg__name">{p.name}</div>
+                <p class="pkg__desc">{p.desc}</p>
+                <span class="pkg__tag">{p.tag}</span>
+              </article>
+            ))
+          }
+        </div>
+      </section>
+
+      <!-- USAGE -->
+      <section class="wrap section" id="usar">
+        <div class="section__head reveal">
+          <span class="eyebrow">Hands on</span>
+          <h2>Install, wrap, start.</h2>
+        </div>
+
+        <div class="usage">
+          <div class="reveal">
+            <h3 style="font-family:var(--font-display);font-size:1.3rem;letter-spacing:-0.02em;margin-bottom:1rem">1 · Install and run the scaffolding</h3>
+            <pre class="code"><code><span class="c"># runtime + your framework adapter</span>
+<span class="k">npm</span> install @waypoint-tours/runtime @waypoint-tours/react
+<span class="k">npm</span> install -D @waypoint-tours/cli
+
+<span class="c"># creates tours/, installs your agent's skill</span>
+<span class="k">npx</span> waypoint init</code></pre>
+            <p style="margin-top:1rem;color:var(--color-ink-muted);font-size:0.95rem">
+              <code style="font-family:var(--font-mono);color:var(--color-teal)">init</code>
+              adds the right dependencies for your framework and sets up the skill in
+              <code style="font-family:var(--font-mono);color:var(--color-teal)">.claude/</code>,
+              <code style="font-family:var(--font-mono);color:var(--color-teal)">.cursor/</code> or
+              <code style="font-family:var(--font-mono);color:var(--color-teal)">AGENTS.md</code>.
+              It doesn't commit — you review the diff yourself.
+            </p>
+          </div>
+
+          <div class="reveal">
+            <h3 style="font-family:var(--font-display);font-size:1.3rem;letter-spacing:-0.02em;margin-bottom:1rem">2 · Wrap your app and start a tour</h3>
+            <pre class="code"><code><span class="k">import</span> &#123; WaypointProvider &#125; <span class="k">from</span> <span class="s">'@waypoint-tours/react'</span>;
+<span class="k">import</span> <span class="s">'@waypoint-tours/runtime/styles.css'</span>;
+
+&lt;<span class="f">WaypointProvider</span> tours=&#123;loadTours&#125; locale=<span class="s">"en"</span>&gt;
+  &lt;<span class="f">App</span> /&gt;
+&lt;/<span class="f">WaypointProvider</span>&gt;
+
+<span class="c">// on any button</span>
+<span class="k">const</span> &#123; start &#125; = <span class="f">useTour</span>();
+&lt;<span class="f">button</span> onClick=&#123;() =&gt; <span class="f">start</span>(<span class="s">'login'</span>)&#125;&gt;
+  How does it work?
+&lt;/<span class="f">button</span>&gt;</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- NOT DOING -->
+      <section class="wrap section">
+        <div class="section__head reveal">
+          <span class="eyebrow">Honest scope</span>
+          <h2>What it <span class="accent-text">doesn't</span> do, by design.</h2>
+          <p>Waypoint does one thing well. This is out of scope on purpose:</p>
+        </div>
+        <div class="nots reveal">
+          <span>Native apps</span>
+          <span>Visual editor</span>
+          <span>Session replay</span>
+          <span>Auto translation</span>
+          <span>Canvas / iframe / WebGL</span>
+          <span>A/B testing</span>
+          <span>Overlay SSR</span>
+        </div>
+      </section>
+    </main>
+
+    <!-- FOOTER — Ft5 statement -->
+    <footer class="footer">
+      <div class="wrap">
+        <p class="footer__statement">Guide your AI through your app.</p>
+        <div class="footer__links">
+          <a href="https://github.com/jupaorba/tour-skill" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://www.npmjs.com/package/@waypoint-tours/runtime" target="_blank" rel="noopener">npm</a>
+          <a href="#pipeline">Pipeline</a>
+          <a href="#packages">Packages</a>
+        </div>
+        <p class="footer__meta">MIT · Juan Pablo Ortiz Ballna · Runtime ≤ 18 KB gzip</p>
+      </div>
+    </footer>
+
+    <script>
+      import Lenis from 'lenis';
+
+      // Parallax 3D del centerpiece (progressive enhancement, respeta reduced-motion)
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      // Scroll global suave (rueda + touch) con Lenis. rAF continuo, no rompe
+      // fixed/sticky. Corre SIEMPRE — es el efecto que el usuario pidió; no lo
+      // apagamos por la config de "reduce animations" de Windows/navegador.
+      const lenis: Lenis = new Lenis({
+        duration: 1.1,
+        easing: (t) => 1 - Math.pow(1 - t, 3), // easeOutCubic, frenada progresiva
+        wheelMultiplier: 0.95,
+        smoothWheel: true,
+      });
+      const raf = (time: number) => {
+        lenis.raf(time);
+        requestAnimationFrame(raf);
+      };
+      requestAnimationFrame(raf);
+      const scene = document.getElementById('scene');
+      if (scene && !reduce) {
+        const stage = scene.parentElement;
+        stage?.addEventListener('pointermove', (e) => {
+          const r = stage.getBoundingClientRect();
+          const px = (e.clientX - r.left) / r.width - 0.5;
+          const py = (e.clientY - r.top) / r.height - 0.5;
+          scene.style.setProperty('--tilty', `${px * 22}deg`);
+          scene.style.setProperty('--tiltx', `${8 - py * 16}deg`);
+        });
+        stage?.addEventListener('pointerleave', () => {
+          scene.style.setProperty('--tilty', '0deg');
+          scene.style.setProperty('--tiltx', '8deg');
+        });
+      }
+
+      // Reveal on scroll
+      const io = new IntersectionObserver(
+        (entries) => {
+          for (const en of entries) {
+            if (en.isIntersecting) {
+              en.target.classList.add('is-in');
+              io.unobserve(en.target);
+            }
+          }
+        },
+        { threshold: 0.12 }
+      );
+      document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+
+      // Copy command
+      document.querySelectorAll('[data-copy]').forEach((btn) => {
+        btn.addEventListener('click', async () => {
+          const el = btn as HTMLElement;
+          await navigator.clipboard.writeText(el.dataset.copy || '');
+          const prev = el.textContent;
+          el.textContent = 'Copied ✓';
+          setTimeout(() => (el.textContent = prev), 1600);
+        });
+      });
+
+      // Anchors del navbar: scroll animado con Lenis (offset por el pill fijo).
+      const navH = 96;
+      document.querySelectorAll('a[href^="#"]').forEach((link) => {
+        link.addEventListener('click', (e) => {
+          const id = (link as HTMLAnchorElement).getAttribute('href') || '';
+          if (id === '#' || id.length < 2) return;
+          const target = document.querySelector(id);
+          if (!target) return;
+          e.preventDefault();
+          lenis.scrollTo(target as HTMLElement, { offset: -navH, duration: 1.2 });
+          history.replaceState(null, '', id);
+        });
+      });
+    </script>
+  </body>
+</html>

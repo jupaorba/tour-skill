@@ -7,3 +7,8 @@ test-results/
 playwright-report/
 .DS_Store
 *.log
+
+# skill de diseño instalada localmente (no va al repo)
+.agents/
+.claude/
+skills-lock.json

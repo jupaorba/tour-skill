@@ -1,0 +1,50 @@
+---
+// Pieza central 3D: pin + brújula + órbitas. CSS puro; el parallax de cursor
+// lo maneja un script diferido en index.astro. Réplica del port.png en 3D.
+// El pin va como SVG (escala exacta, sin bug de clip-path en px).
+---
+
+<div class="scene" id="scene" aria-hidden="true">
+  <div class="scene__glow"></div>
+
+  <div class="orbit orbit--a">
+    <span class="orbit__dot orbit__dot--teal"></span>
+  </div>
+  <div class="orbit orbit--b">
+    <span class="orbit__dot orbit__dot--amber"></span>
+    <span class="orbit__dot orbit__dot--violet"></span>
+  </div>
+
+  <svg class="pin" viewBox="-14 -12 128 168" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <filter id="pinShadow" x="-40%" y="-20%" width="180%" height="150%">
+        <feDropShadow dx="0" dy="14" stdDeviation="12" flood-color="#7c5cff" flood-opacity="0.55" />
+      </filter>
+      <linearGradient id="pinGrad" x1="10" y1="6" x2="90" y2="120" gradientUnits="userSpaceOnUse">
+        <stop offset="0" stop-color="#4f8cff" />
+        <stop offset="1" stop-color="#8b5cf6" />
+      </linearGradient>
+      <radialGradient id="eyeGrad" cx="0.5" cy="0.4" r="0.7">
+        <stop offset="0" stop-color="#1a2033" />
+        <stop offset="1" stop-color="#080b16" />
+      </radialGradient>
+      <linearGradient id="starGrad" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#ffffff" />
+        <stop offset="1" stop-color="#b9c6e6" />
+      </linearGradient>
+    </defs>
+    <g filter="url(#pinShadow)">
+      <path
+        d="M50 130 C 22 90 8 66 8 42 A 42 42 0 1 1 92 42 C 92 66 78 90 50 130 Z"
+        fill="url(#pinGrad)"
+      />
+      <circle cx="50" cy="42" r="25" fill="url(#eyeGrad)" />
+      <path
+        d="M50 20 L56 36 L74 42 L56 48 L50 64 L44 48 L26 42 L44 36 Z"
+        fill="url(#starGrad)"
+      />
+    </g>
+  </svg>
+
+  <div class="scene__base"></div>
+</div>
