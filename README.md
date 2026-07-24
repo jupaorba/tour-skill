@@ -2,92 +2,195 @@
 
 ![Waypoint](public/port.png)
 
-Tours guiados interactivos para apps web: un agente de IA lee tu código,
-entiende el flujo, y produce un `*.tour.json` que el runtime convierte en un
-tutorial con máscara de enfoque, cursor animado y textos en español neutro.
-Tú no escribes CSS ni lógica de overlay — eso ya existe. Tú (o tu agente)
-decides orden, agrupación y redacción.
+[![npm](https://img.shields.io/npm/v/@waypoint-tours/runtime?color=6d5cff&label=runtime)](https://www.npmjs.com/package/@waypoint-tours/runtime)
+[![npm](https://img.shields.io/npm/v/@waypoint-tours/cli?color=2f6fed&label=cli)](https://www.npmjs.com/package/@waypoint-tours/cli)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
-## Paquetes
+**Guide your AI through your app.** An npm skill that creates interactive
+guided tours of your app's views or modules — written by an AI agent, drawn
+by a tiny runtime.
 
-| Paquete | Qué es |
-|---|---|
-| [`@waypoint-tours/runtime`](packages/runtime) | Motor: máscara, cursor, tooltip, máquina de estados. Sin dependencias salvo `@floating-ui/dom`. ≤18 KB gzip. |
-| [`@waypoint-tours/react`](packages/react) | `<WaypointProvider>` + `useTour()`. |
-| [`@waypoint-tours/vue`](packages/vue) | Plugin + `useTour()` para Vue 3. |
-| [`@waypoint-tours/cli`](packages/cli) | `npx waypoint <comando>` — descubre vistas, ancla elementos, extrae design tokens, verifica tours en un navegador real. |
-| [`packages/skill`](packages/skill) | La skill que usa un agente (Claude Code, Cursor, cualquiera) para generar los `.tour.json`. |
+🔗 **[Live demo →](https://jupaorba.github.io/tour-skill/)**
 
-## Instalación rápida
+---
+
+## What it is
+
+An AI agent (Claude Code, Cursor, any) **reads your code**, understands the
+flow, and produces a `*.tour.json` file. The runtime turns that file into a
+step-by-step tutorial with a focus mask, an animated cursor, and tooltips.
+
+You don't write CSS or overlay logic — that already exists. You (or your
+agent) just decide the order, grouping, and wording.
+
+---
+
+## Install
 
 ```bash
 npm install @waypoint-tours/runtime @waypoint-tours/react
 npm install -D @waypoint-tours/cli
+
 npx waypoint init
 ```
 
-`init` agrega las dependencias correctas según tu framework, crea `tours/`, e
-instala la skill para tu agente (`.claude/skills/waypoint-tours/` para
-Claude Code, `.cursor/rules/waypoint-tours.mdc` para Cursor, y un bloque en
-`AGENTS.md` para cualquier otro). No hace `git commit` — revisa el diff tú
-mismo.
+`init` adds the right dependencies for your framework, creates `tours/`, and
+installs the skill for your agent (`.claude/`, `.cursor/`, or `AGENTS.md`).
+It never commits — you review the diff yourself.
 
-## Uso en la app (React)
+---
+
+## Use it in your app
 
 ```tsx
-import { WaypointProvider } from '@waypoint-tours/react';
+import { WaypointProvider, useTour } from '@waypoint-tours/react';
 import '@waypoint-tours/runtime/styles.css';
 import toursIndex from '../tours/index.json';
 
-<WaypointProvider
-  tours={async () => {
-    const entries = await Promise.all(
-      toursIndex.tours.map(async (t) => [t.id, (await import(`../${t.file}`)).default])
-    );
-    return Object.fromEntries(entries);
-  }}
-  locale="es-MX"
->
+// 1. Wrap your app
+<WaypointProvider tours={loadTours} locale="en">
   <App />
 </WaypointProvider>;
-```
 
-```tsx
+// 2. Start a tour from any button
 const { start } = useTour();
-<button onClick={() => start('login')}>¿Cómo funciona?</button>;
+<button onClick={() => start('login')}>How does it work?</button>;
 ```
 
-## Pipeline del agente (resumen — ver `packages/skill/SKILL.md`)
+---
 
-```
-npx waypoint discover          → .tourmap.json (framework, router, rutas → archivos)
-(el agente analiza la vista y modela el flujo)
-npx waypoint anchor --view=X   → inyecta data-tour="x.elemento" (codemod idempotente)
-npx waypoint tokens            → tours/theme.css con tus design tokens reales
-(el agente escribe tours/<id>.tour.json)
-npx waypoint verify tours/<id>.tour.json --json → hasta 3 ciclos de reparación
-npx waypoint register          → tours/index.json
+## How it works
+
+Your agent walks this pipeline. Each step is one CLI command:
+
+| Step | Command | Result |
+|---|---|---|
+| 1 | `npx waypoint discover` | `.tourmap.json` — framework, router, routes → files |
+| 2 | `npx waypoint anchor --view=X` | injects `data-tour="x.element"` (idempotent codemod) |
+| 3 | `npx waypoint tokens` | `tours/theme.css` from your real design tokens |
+| 4 | `npx waypoint verify tours/<id>.tour.json` | walks every step in a **real browser** (Playwright), up to 3 repair cycles |
+| 5 | `npx waypoint register` | updates `tours/index.json` |
+
+Between step 3 and 4, the agent writes the `tours/<id>.tour.json` itself.
+
+---
+
+## Example results
+
+This is what Waypoint produces — plain JSON tour files.
+
+### 1. A simple login tour
+
+```jsonc
+{
+  "id": "login",
+  "title": "How to sign in",
+  "route": "/login",
+  "steps": [
+    { "id": "intro", "type": "modal", "body": "Let me show you how to sign in in under a minute." },
+    {
+      "id": "email",
+      "type": "input",
+      "title": "Your email",
+      "body": "Type the email you signed up with. If there's a typo, we'll flag it right here.",
+      "anchor": { "selector": "[data-tour=\"login.email\"]", "strategy": "data-tour" },
+      "demoValue": "person@example.com"
+    },
+    {
+      "id": "submit",
+      "type": "action",
+      "title": "Sign in",
+      "body": "Hit sign in. If your details are correct, you'll see your dashboard instantly.",
+      "anchor": { "selector": "[data-tour=\"login.submit\"]", "strategy": "data-tour" },
+      "sideEffect": "network"
+    }
+  ],
+  "onFinish": { "message": "Done — you know how to sign in now." }
+}
 ```
 
-## Desarrollo de este repo
+### 2. A richer tour (grouped fields + modal step)
+
+```jsonc
+{
+  "id": "new-customer",
+  "title": "Add a customer",
+  "route": "/customers/new",
+  "steps": [
+    {
+      "id": "contact",
+      "type": "group",
+      "title": "Contact details",
+      "body": "Start with the contact details. The email is where we'll send invoices.",
+      "anchors": [
+        { "selector": "[data-tour=\"customer.name\"]", "strategy": "data-tour" },
+        { "selector": "[data-tour=\"customer.email\"]", "strategy": "data-tour" }
+      ]
+    },
+    {
+      "id": "type",
+      "type": "input",
+      "title": "Person type",
+      "body": "Pick Individual or Company. If Company, we'll ask for the legal name.",
+      "anchor": { "selector": "[data-tour=\"customer.type\"]", "strategy": "data-tour" },
+      "demoValue": "company"
+    },
+    {
+      "id": "save",
+      "type": "action",
+      "title": "Save the customer",
+      "body": "Save. The customer is instantly available for invoicing.",
+      "anchor": { "selector": "[data-tour=\"customer.save\"]", "strategy": "data-tour" },
+      "sideEffect": "network"
+    }
+  ],
+  "onFinish": { "message": "Done — you know how to add a customer." }
+}
+```
+
+Step types cover `modal`, `highlight`, `input`, `action`, `await`, `group`,
+`navigate`, and `openModal`. See the full schema in
+[`packages/skill/schema/tour.schema.json`](packages/skill/schema/tour.schema.json).
+
+---
+
+## Packages
+
+| Package | What it is |
+|---|---|
+| [`@waypoint-tours/runtime`](packages/runtime) | The engine: mask, cursor, tooltip, state machine. No deps except `@floating-ui/dom`. ≤18 KB gzip. |
+| [`@waypoint-tours/react`](packages/react) | `<WaypointProvider>` + `useTour()`. |
+| [`@waypoint-tours/vue`](packages/vue) | Plugin + `useTour()` for Vue 3. |
+| [`@waypoint-tours/cli`](packages/cli) | `npx waypoint <command>` — discover, anchor, extract tokens, verify in a real browser. |
+| [`packages/skill`](packages/skill) | The skill an agent (Claude Code, Cursor, any) uses to generate the `.tour.json` files. |
+
+---
+
+## What it does NOT do (by design)
+
+Native apps · visual editor · session replay · auto translation ·
+canvas/iframe/WebGL · A/B testing · overlay SSR.
+
+---
+
+## Local development
 
 ```bash
 npm install
 npm run build
 npm run typecheck
-npm test              # vitest — algoritmos puros + validación de schema
-npm run size           # presupuesto de 18 KB gzip del runtime
-npm run e2e             # Playwright contra examples/react-vite-crm
+npm test        # vitest — pure algorithms + schema validation
+npm run size    # 18 KB gzip budget for the runtime
+npm run e2e     # Playwright against examples/react-vite-crm
 
-cd examples/react-vite-crm && npm run dev   # levantar el ejemplo
+cd examples/react-vite-crm && npm run dev   # run the example app
 ```
 
-Ver `BUILD_PLAN.md` para los contratos de interfaz y algoritmos críticos, y
-`AGENTS_LOG.md` para las decisiones tomadas durante la construcción
-(incluye las desviaciones frente al plan original: npm workspaces en vez de
-pnpm, y el ejemplo de Vue diferido).
+See [`BUILD_PLAN.md`](BUILD_PLAN.md) for interface contracts and critical
+algorithms, and [`AGENTS_LOG.md`](AGENTS_LOG.md) for build decisions.
 
-## Qué NO hace (por diseño)
+---
 
-Apps nativas, editor visual, session replay, traducción automática,
-soporte a canvas/iframe/WebGL, A/B testing, SSR del overlay.
+## License
+
+MIT © Juan Pablo Ortiz Ballna
