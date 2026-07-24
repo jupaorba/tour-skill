@@ -2,6 +2,13 @@
   "name": "@waypoint-tours/cli",
   "version": "0.1.0",
   "description": "CLI de Waypoint: descubre vistas, ancla elementos, extrae design tokens y verifica tours guiados antes de publicarlos.",
+  "license": "MIT",
+  "author": "Juan Pablo Ortiz Ballna",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jupaorba/tour-skill.git",
+    "directory": "packages/cli"
+  },
   "type": "module",
   "bin": {
     "waypoint": "./dist/cli.js"

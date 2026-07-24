@@ -1,5 +1,7 @@
 # Waypoint
 
+![Waypoint](public/port.png)
+
 Tours guiados interactivos para apps web: un agente de IA lee tu código,
 entiende el flujo, y produce un `*.tour.json` que el runtime convierte en un
 tutorial con máscara de enfoque, cursor animado y textos en español neutro.

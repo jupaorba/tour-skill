@@ -2,6 +2,13 @@
   "name": "@waypoint-tours/runtime",
   "version": "0.1.0",
   "description": "Runtime del motor de tours guiados de Waypoint: máscara de enfoque, cursor animado y tooltips.",
+  "license": "MIT",
+  "author": "Juan Pablo Ortiz Ballna",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jupaorba/tour-skill.git",
+    "directory": "packages/runtime"
+  },
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",

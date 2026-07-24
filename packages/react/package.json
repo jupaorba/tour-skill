@@ -2,6 +2,13 @@
   "name": "@waypoint-tours/react",
   "version": "0.1.0",
   "description": "Provider y hook de React para el runtime de tours guiados de Waypoint.",
+  "license": "MIT",
+  "author": "Juan Pablo Ortiz Ballna",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jupaorba/tour-skill.git",
+    "directory": "packages/react"
+  },
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
