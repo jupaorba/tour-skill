@@ -1,0 +1,65 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build
+        run: npm run build
+
+      - name: Presupuesto de bundle (18 KB gzip)
+        run: npm run size
+
+      - name: Tests unitarios (cobertura runtime/core >= 70%)
+        run: npx vitest run --coverage
+
+      - name: Instalar navegadores de Playwright
+        run: npx playwright install --with-deps chromium
+
+      - name: Verificar los tours del ejemplo React
+        working-directory: examples/react-vite-crm
+        run: |
+          npm run dev &
+          npx wait-on http://localhost:5173/login
+          node ../../packages/cli/dist/cli.js verify --all --ci --json
+          kill %1
+
+      - name: E2E (Playwright)
+        run: npx playwright test
+
+  # Falla si un PR rompe un data-tour anclado por un tour existente.
+  tour-drift-gate:
+    runs-on: ubuntu-latest
+    needs: build-and-test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: doctor (detecta SOURCE_DRIFT)
+        working-directory: examples/react-vite-crm
+        run: node ../../packages/cli/dist/cli.js doctor --json

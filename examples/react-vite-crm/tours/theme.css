@@ -1,0 +1,17 @@
+/* Generado por `npx waypoint tokens`. No editar a mano: se sobreescribe. */
+:root {
+  --wp-surface: var(--color-surface);
+  --wp-surface-2: #111827;
+  --wp-text: var(--color-text);
+  --wp-text-muted: rgba(0, 0, 0, 0.68);
+  --wp-accent: var(--color-primary);
+  --wp-accent-text: #ffffff;
+  --wp-border: var(--color-border);
+  --wp-radius: var(--radius-md);
+  --wp-shadow: 0 8px 24px rgba(0, 0, 0, 0.16);
+  --wp-font: system-ui, -apple-system, "Segoe UI", sans-serif;
+  --wp-font-size: 15px;
+  --wp-overlay-color: rgba(0, 0, 0, 0.55);
+  --wp-overlay-opacity: 0.55;
+  --wp-z: 2147483000;
+}

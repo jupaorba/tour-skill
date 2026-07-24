@@ -1,0 +1,87 @@
+{
+  "$schema": "../../../packages/skill/schema/tour.schema.json",
+  "id": "alta-cliente",
+  "specVersion": 1,
+  "title": "Da de alta un cliente",
+  "description": "Registra un cliente nuevo con sus datos de contacto, fiscales y de dirección.",
+  "route": "/clientes/nuevo",
+  "audience": "end-user",
+  "estimatedSeconds": 90,
+  "locale": "es-MX",
+  "demoMode": true,
+  "generatedBy": {
+    "agent": "hand-written",
+    "at": "2026-07-23T00:00:00Z",
+    "sourceFiles": ["src/pages/AltaCliente.tsx"]
+  },
+  "steps": [
+    {
+      "id": "intro",
+      "type": "modal",
+      "body": "Te muestro cómo dar de alta un cliente nuevo en menos de dos minutos."
+    },
+    {
+      "id": "datos-contacto",
+      "type": "group",
+      "title": "Datos de contacto",
+      "body": "Empieza con los datos de contacto. El correo es el que usaremos para mandarle sus facturas.",
+      "anchors": [
+        { "selector": "[data-tour=\"alta-cliente.nombre\"]", "strategy": "data-tour" },
+        { "selector": "[data-tour=\"alta-cliente.apellidos\"]", "strategy": "data-tour" },
+        { "selector": "[data-tour=\"alta-cliente.correo\"]", "strategy": "data-tour" },
+        { "selector": "[data-tour=\"alta-cliente.telefono\"]", "strategy": "data-tour" }
+      ]
+    },
+    {
+      "id": "tipo-persona",
+      "type": "input",
+      "title": "Tipo de persona",
+      "body": "Elige Física o Moral. Si eliges Moral, te pediremos la razón social.",
+      "anchor": { "selector": "[data-tour=\"alta-cliente.tipo-persona\"]", "strategy": "data-tour" },
+      "demoValue": "moral",
+      "field": { "required": true, "dependsOn": null }
+    },
+    {
+      "id": "razon-social",
+      "type": "input",
+      "title": "Razón social",
+      "body": "Este campo solo aparece si elegiste Persona moral. Escribe el nombre legal de la empresa.",
+      "anchor": { "selector": "[data-tour=\"alta-cliente.razon-social\"]", "strategy": "data-tour" },
+      "demoValue": "Comercializadora Ejemplo SA de CV",
+      "field": { "required": true, "dependsOn": "tipoPersona=moral" },
+      "skipIf": "[data-tour=\"alta-cliente.razon-social\"]"
+    },
+    {
+      "id": "rfc",
+      "type": "input",
+      "title": "RFC",
+      "body": "Son 13 caracteres para persona física y 12 para moral. Sin espacios ni guiones.",
+      "anchor": { "selector": "[data-tour=\"alta-cliente.rfc\"]", "strategy": "data-tour" },
+      "demoValue": "XAXX010101000",
+      "field": { "required": true, "validation": "13 caracteres para persona física, 12 para moral. Sin espacios ni guiones." }
+    },
+    {
+      "id": "direccion",
+      "type": "group",
+      "title": "Dirección fiscal",
+      "body": "Llena la dirección fiscal completa: calle, número, colonia, código postal, ciudad y entidad.",
+      "anchors": [
+        { "selector": "[data-tour=\"alta-cliente.calle\"]", "strategy": "data-tour" },
+        { "selector": "[data-tour=\"alta-cliente.numero\"]", "strategy": "data-tour" },
+        { "selector": "[data-tour=\"alta-cliente.colonia\"]", "strategy": "data-tour" },
+        { "selector": "[data-tour=\"alta-cliente.cp\"]", "strategy": "data-tour" },
+        { "selector": "[data-tour=\"alta-cliente.ciudad\"]", "strategy": "data-tour" },
+        { "selector": "[data-tour=\"alta-cliente.estado\"]", "strategy": "data-tour" }
+      ]
+    },
+    {
+      "id": "guardar",
+      "type": "action",
+      "title": "Guarda al cliente",
+      "body": "Guarda. El cliente queda disponible de inmediato para facturarle.",
+      "anchor": { "selector": "[data-tour=\"alta-cliente.guardar\"]", "strategy": "data-tour" },
+      "sideEffect": "network"
+    }
+  ],
+  "onFinish": { "message": "Listo, ya sabes dar de alta un cliente.", "nextTour": "preferencias" }
+}

@@ -1,0 +1,178 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://waypoint.dev/schema/tour.schema.json",
+  "title": "Waypoint Tour",
+  "type": "object",
+  "required": ["id", "specVersion", "title", "route", "audience", "steps"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": { "type": "string" },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "description": "kebab-case. Debe coincidir con el nombre de archivo sin .tour.json"
+    },
+    "specVersion": { "type": "integer", "const": 1 },
+    "title": { "type": "string", "minLength": 3, "maxLength": 60 },
+    "description": { "type": "string", "maxLength": 160 },
+    "route": { "type": "string", "pattern": "^/" },
+    "audience": { "enum": ["end-user", "admin", "developer"] },
+    "estimatedSeconds": { "type": "integer", "minimum": 5, "maximum": 600 },
+    "locale": { "type": "string", "default": "es-MX" },
+    "demoMode": { "type": "boolean", "default": true },
+    "prerequisites": {
+      "type": "array",
+      "items": { "type": "string" },
+      "default": []
+    },
+    "generatedBy": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "agent": { "type": "string" },
+        "at": { "type": "string", "format": "date-time" },
+        "sourceFiles": { "type": "array", "items": { "type": "string" } },
+        "sourceHash": { "type": "string" }
+      }
+    },
+    "steps": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 12,
+      "items": { "$ref": "#/$defs/step" }
+    },
+    "onFinish": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "persist": { "type": "string" },
+        "message": { "type": "string", "maxLength": 220 },
+        "nextTour": { "type": "string" }
+      }
+    }
+  },
+
+  "$defs": {
+    "anchor": {
+      "type": "object",
+      "required": ["selector", "strategy"],
+      "additionalProperties": false,
+      "properties": {
+        "selector": { "type": "string", "minLength": 1 },
+        "strategy": { "enum": ["data-tour", "data-testid", "css", "text"] },
+        "fragile": { "type": "boolean", "default": false },
+        "fallback": { "type": "string" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "strategy": { "const": "css" } }, "required": ["strategy"] },
+          "then": { "properties": { "fragile": { "const": true } }, "required": ["fragile"] }
+        },
+        {
+          "if": { "properties": { "strategy": { "const": "text" } }, "required": ["strategy"] },
+          "then": { "properties": { "fragile": { "const": true } }, "required": ["fragile"] }
+        }
+      ]
+    },
+
+    "field": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "required": { "type": "boolean" },
+        "validation": { "type": "string", "maxLength": 160 },
+        "dependsOn": { "type": ["string", "null"] },
+        "optionsHint": { "type": ["string", "null"], "maxLength": 160 }
+      }
+    },
+
+    "advanceOn": {
+      "type": "object",
+      "required": ["event"],
+      "additionalProperties": false,
+      "properties": {
+        "event": { "enum": ["click", "route", "selector", "timeout", "manual", "input"] },
+        "value": { "type": "string" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "event": { "enum": ["route", "selector"] } }, "required": ["event"] },
+          "then": { "required": ["value"] }
+        }
+      ]
+    },
+
+    "step": {
+      "type": "object",
+      "required": ["id", "type", "body"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9]+([-_][a-z0-9]+)*$" },
+        "type": {
+          "enum": ["modal", "highlight", "input", "action", "await", "group", "navigate", "openModal"]
+        },
+        "anchor": { "$ref": "#/$defs/anchor" },
+        "anchors": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 8,
+          "items": { "$ref": "#/$defs/anchor" }
+        },
+        "title": { "type": "string", "maxLength": 60 },
+        "body": { "type": "string", "minLength": 10, "maxLength": 220 },
+        "placement": {
+          "enum": ["auto", "top", "bottom", "left", "right"],
+          "default": "auto"
+        },
+        "maskPadding": { "type": "integer", "minimum": 0, "maximum": 40, "default": 8 },
+        "maskRadius": {
+          "oneOf": [{ "const": "inherit" }, { "type": "integer", "minimum": 0 }],
+          "default": "inherit"
+        },
+        "scrollIntoView": { "type": "boolean", "default": true },
+        "demoValue": { "type": "string", "maxLength": 120 },
+        "typingSpeedMs": { "type": "integer", "minimum": 10, "maximum": 200, "default": 45 },
+        "field": { "$ref": "#/$defs/field" },
+        "advanceOn": { "$ref": "#/$defs/advanceOn" },
+        "sideEffect": {
+          "enum": ["none", "network", "navigation", "destructive"],
+          "default": "none"
+        },
+        "route": { "type": "string", "pattern": "^/" },
+        "skipIf": { "type": ["string", "null"] },
+        "timeoutMs": { "type": "integer", "minimum": 500, "maximum": 60000, "default": 8000 }
+      },
+
+      "allOf": [
+        {
+          "$comment": "R1: tipos que exigen ancla simple",
+          "if": {
+            "properties": { "type": { "enum": ["highlight", "input", "action", "await", "openModal"] } },
+            "required": ["type"]
+          },
+          "then": { "required": ["anchor"] }
+        },
+        {
+          "$comment": "R2: group exige anchors multiple",
+          "if": { "properties": { "type": { "const": "group" } }, "required": ["type"] },
+          "then": { "required": ["anchors"] }
+        },
+        {
+          "$comment": "R3: navigate exige route",
+          "if": { "properties": { "type": { "const": "navigate" } }, "required": ["type"] },
+          "then": { "required": ["route"] }
+        },
+        {
+          "$comment": "R4: modal no puede llevar ancla",
+          "if": { "properties": { "type": { "const": "modal" } }, "required": ["type"] },
+          "then": { "not": { "anyOf": [{ "required": ["anchor"] }, { "required": ["anchors"] }] } }
+        },
+        {
+          "$comment": "R5: input exige demoValue",
+          "if": { "properties": { "type": { "const": "input" } }, "required": ["type"] },
+          "then": { "required": ["demoValue"] }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,116 @@
+{
+  "$schema": "../../../packages/skill/schema/tour.schema.json",
+  "id": "preferencias",
+  "specVersion": 1,
+  "title": "Configura preferencias",
+  "description": "Ajusta notificaciones, plan, crédito, contacto y exporta los datos del cliente.",
+  "route": "/preferencias",
+  "audience": "end-user",
+  "estimatedSeconds": 120,
+  "locale": "es-MX",
+  "demoMode": true,
+  "generatedBy": {
+    "agent": "hand-written",
+    "at": "2026-07-24T00:00:00Z",
+    "sourceFiles": ["src/pages/Preferencias.tsx"]
+  },
+  "steps": [
+    {
+      "id": "intro",
+      "type": "modal",
+      "body": "Te muestro cómo ajustar las preferencias de un cliente: notificaciones, plan, crédito y más."
+    },
+    {
+      "id": "notificaciones",
+      "type": "input",
+      "title": "Notificaciones",
+      "body": "Marca esta casilla si el cliente quiere recibir notificaciones por correo.",
+      "anchor": { "selector": "[data-tour=\"preferencias.notificaciones\"]", "strategy": "data-tour" },
+      "demoValue": "true",
+      "field": { "required": false }
+    },
+    {
+      "id": "plan",
+      "type": "input",
+      "title": "Plan de facturación",
+      "body": "Elige el plan anual si el cliente factura de forma recurrente.",
+      "anchor": { "selector": "[data-tour=\"preferencias.plan-anual\"]", "strategy": "data-tour" },
+      "demoValue": "true",
+      "field": { "required": true, "optionsHint": "Mensual, anual o personalizado." }
+    },
+    {
+      "id": "notas",
+      "type": "input",
+      "title": "Notas internas",
+      "body": "Escribe cualquier detalle que el equipo deba conocer sobre este cliente.",
+      "anchor": { "selector": "[data-tour=\"preferencias.notas\"]", "strategy": "data-tour" },
+      "demoValue": "Cliente prioritario, siempre paga antes del corte."
+    },
+    {
+      "id": "limite-credito",
+      "type": "input",
+      "title": "Límite de crédito",
+      "body": "Define el monto máximo que este cliente puede deber a la vez.",
+      "anchor": { "selector": "[data-tour=\"preferencias.limite-credito\"]", "strategy": "data-tour" },
+      "demoValue": "12000",
+      "field": { "validation": "Debe ser un número positivo." }
+    },
+    {
+      "id": "fecha-corte",
+      "type": "input",
+      "title": "Fecha de corte",
+      "body": "Escoge la fecha en la que se corta el ciclo de facturación del cliente.",
+      "anchor": { "selector": "[data-tour=\"preferencias.fecha-corte\"]", "strategy": "data-tour" },
+      "demoValue": "2026-08-15"
+    },
+    {
+      "id": "dias-alerta",
+      "type": "input",
+      "title": "Días de alerta",
+      "body": "Ajusta cuántos días antes del corte quieres que le avisemos al cliente.",
+      "anchor": { "selector": "[data-tour=\"preferencias.dias-alerta\"]", "strategy": "data-tour" },
+      "demoValue": "5"
+    },
+    {
+      "id": "canales",
+      "type": "input",
+      "title": "Canales de contacto",
+      "body": "Selecciona por qué canales puede contactarse a este cliente.",
+      "anchor": { "selector": "[data-tour=\"preferencias.canales\"]", "strategy": "data-tour" },
+      "demoValue": "correo,whatsapp",
+      "field": { "optionsHint": "Correo, SMS, WhatsApp o llamada. Puedes elegir varios." }
+    },
+    {
+      "id": "modo-oscuro",
+      "type": "action",
+      "title": "Modo oscuro",
+      "body": "Activa el modo oscuro si el cliente prefiere esa vista en su portal.",
+      "anchor": { "selector": "[data-tour=\"preferencias.modo-oscuro\"]", "strategy": "data-tour" }
+    },
+    {
+      "id": "exportar",
+      "type": "openModal",
+      "title": "Exportar datos",
+      "body": "Da click aquí para generar un archivo con los datos y preferencias del cliente.",
+      "anchor": { "selector": "[data-tour=\"preferencias.exportar\"]", "strategy": "data-tour" },
+      "advanceOn": { "event": "selector", "value": "[data-tour=\"preferencias.exportar-contenido\"]" }
+    },
+    {
+      "id": "exportar-confirmar",
+      "type": "action",
+      "title": "Confirma la exportación",
+      "body": "Confirma para generar el CSV y cerrar este cuadro.",
+      "anchor": { "selector": "[data-tour=\"preferencias.exportar-confirmar\"]", "strategy": "data-tour" },
+      "sideEffect": "network"
+    },
+    {
+      "id": "guardar",
+      "type": "action",
+      "title": "Guarda las preferencias",
+      "body": "Guarda los cambios para aplicarlos al cliente.",
+      "anchor": { "selector": "[data-tour=\"preferencias.guardar\"]", "strategy": "data-tour" },
+      "sideEffect": "network"
+    }
+  ],
+  "onFinish": { "message": "Listo, ya sabes configurar las preferencias de un cliente." }
+}

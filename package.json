@@ -1,0 +1,41 @@
+{
+  "name": "waypoint-monorepo",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "packages/*",
+    "examples/*"
+  ],
+  "scripts": {
+    "build": "npm run build --ws --if-present",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "size": "size-limit",
+    "lint": "eslint . --ext .ts,.tsx",
+    "typecheck": "tsc -b --pretty",
+    "e2e": "playwright test",
+    "schema:test": "vitest run packages/skill/schema.test.ts"
+  },
+  "devDependencies": {
+    "@size-limit/preset-small-lib": "^11.1.4",
+    "@types/node": "^20.14.0",
+    "@typescript-eslint/eslint-plugin": "^7.16.0",
+    "@typescript-eslint/parser": "^7.16.0",
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1",
+    "eslint": "^8.57.0",
+    "jsdom": "^24.1.0",
+    "playwright": "^1.45.0",
+    "@playwright/test": "^1.45.0",
+    "prettier": "^3.3.2",
+    "size-limit": "^11.1.4",
+    "tsup": "^8.1.0",
+    "typescript": "^5.5.3",
+    "wait-on": "^7.2.0",
+    "vitest": "^2.0.0",
+    "@vitest/coverage-v8": "^2.0.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "name": "@waypoint-tours/cli",
+  "version": "0.1.0",
+  "description": "CLI de Waypoint: descubre vistas, ancla elementos, extrae design tokens y verifica tours guiados antes de publicarlos.",
+  "type": "module",
+  "bin": {
+    "waypoint": "./dist/cli.js"
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsup && node scripts/copy-skill.mjs",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@babel/parser": "^7.24.8",
+    "@babel/traverse": "^7.24.8",
+    "@babel/types": "^7.24.9",
+    "@playwright/test": "^1.45.0",
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1",
+    "commander": "^12.1.0",
+    "diff": "^5.2.0",
+    "fast-glob": "^3.3.2",
+    "playwright": "^1.45.0",
+    "recast": "^0.23.9"
+  },
+  "devDependencies": {
+    "@types/babel__traverse": "^7.20.6",
+    "@types/diff": "^5.2.1",
+    "@types/node": "^20.14.0",
+    "tsup": "^8.1.0",
+    "typescript": "^5.5.3"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "tours": [
+    {
+      "id": "login",
+      "title": "Cómo iniciar sesión",
+      "route": "/login",
+      "audience": "end-user",
+      "file": "tours/login.tour.json"
+    },
+    {
+      "id": "dashboard",
+      "title": "Consulta tus pedidos",
+      "route": "/dashboard",
+      "audience": "end-user",
+      "file": "tours/dashboard.tour.json"
+    },
+    {
+      "id": "alta-cliente",
+      "title": "Da de alta un cliente",
+      "route": "/clientes/nuevo",
+      "audience": "end-user",
+      "file": "tours/alta-cliente.tour.json"
+    },
+    {
+      "id": "preferencias",
+      "title": "Configura preferencias",
+      "route": "/preferencias",
+      "audience": "end-user",
+      "file": "tours/preferencias.tour.json"
+    }
+  ]
+}

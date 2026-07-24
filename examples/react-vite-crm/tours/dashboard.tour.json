@@ -1,0 +1,61 @@
+{
+  "$schema": "../../../packages/skill/schema/tour.schema.json",
+  "id": "dashboard",
+  "specVersion": 1,
+  "title": "Consulta tus pedidos",
+  "description": "Recorre la tabla de pedidos, búscalos y da de alta un cliente nuevo.",
+  "route": "/dashboard",
+  "audience": "end-user",
+  "estimatedSeconds": 60,
+  "locale": "es-MX",
+  "demoMode": true,
+  "generatedBy": {
+    "agent": "hand-written",
+    "at": "2026-07-23T00:00:00Z",
+    "sourceFiles": ["src/pages/Dashboard.tsx"]
+  },
+  "steps": [
+    {
+      "id": "intro",
+      "type": "modal",
+      "body": "Te muestro en menos de un minuto cómo consultar tus pedidos y dar de alta un cliente."
+    },
+    {
+      "id": "tabla",
+      "type": "highlight",
+      "title": "Tus pedidos",
+      "body": "Tus pedidos aparecen aquí, los más recientes primero.",
+      "anchor": { "selector": "[data-tour=\"dashboard.tabla\"]", "strategy": "data-tour" }
+    },
+    {
+      "id": "buscar",
+      "type": "await",
+      "title": "Busca un pedido",
+      "body": "Escribe el nombre de un cliente para encontrar su pedido al instante.",
+      "anchor": { "selector": "[data-tour=\"dashboard.buscar\"]", "strategy": "data-tour" },
+      "advanceOn": { "event": "input" }
+    },
+    {
+      "id": "ver-detalle",
+      "type": "openModal",
+      "title": "Ver el detalle",
+      "body": "Da click para ver el detalle completo de un pedido sin salir de esta pantalla.",
+      "anchor": { "selector": "[data-tour=\"dashboard.ver-detalle\"]:first-of-type", "strategy": "css", "fragile": true, "fallback": "[data-tour=\"dashboard.ver-detalle\"]" },
+      "advanceOn": { "event": "selector", "value": "[data-tour-modal=\"true\"]" }
+    },
+    {
+      "id": "cerrar-detalle",
+      "type": "highlight",
+      "title": "Detalle del pedido",
+      "body": "Aquí ves el cliente, el monto y si el pedido ya se pagó.",
+      "anchor": { "selector": "[data-tour=\"dashboard.detalle-contenido\"]", "strategy": "data-tour" }
+    },
+    {
+      "id": "ir-alta-cliente",
+      "type": "navigate",
+      "body": "Ahora vamos a dar de alta un cliente nuevo.",
+      "route": "/clientes/nuevo"
+    }
+  ],
+  "onFinish": { "message": "Listo, ya sabes consultar tus pedidos.", "nextTour": "alta-cliente" }
+}

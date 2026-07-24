@@ -1,0 +1,50 @@
+{
+  "generatedAt": "2026-07-24T05:20:27.983Z",
+  "root": ".",
+  "framework": "react",
+  "bundler": "vite",
+  "router": {
+    "kind": "react-router",
+    "version": "^6.24.1"
+  },
+  "styles": {
+    "kind": "plain-css"
+  },
+  "forms": {
+    "kind": "react-hook-form",
+    "validator": "zod"
+  },
+  "views": [
+    {
+      "name": "Login",
+      "route": "/login",
+      "file": "src/pages/Login.tsx",
+      "children": [],
+      "hasForm": true,
+      "hasModal": false,
+      "sourceHash": "sha256:d1cfbb17dd9d3666eff727bc6922f102de9cb2b1ee9a17c718cd5e0de15e6f93"
+    },
+    {
+      "name": "Dashboard",
+      "route": "/dashboard",
+      "file": "src/pages/Dashboard.tsx",
+      "children": [
+        "src/components/ConfirmModal.tsx"
+      ],
+      "hasForm": false,
+      "hasModal": true,
+      "sourceHash": "sha256:11308085c9ef0a8aa0db385eca0539a5e0b7e79d0ba659068f26c3c061ba9d96"
+    },
+    {
+      "name": "AltaCliente",
+      "route": "/clientes/nuevo",
+      "file": "src/pages/AltaCliente.tsx",
+      "children": [
+        "src/components/ConfirmModal.tsx"
+      ],
+      "hasForm": true,
+      "hasModal": true,
+      "sourceHash": "sha256:61cdc8cb0575363a6c7fc388b6841a06b659aa1530b1a38d55c741abf7deecf7"
+    }
+  ]
+}

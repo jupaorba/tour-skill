@@ -1,0 +1,37 @@
+{
+  "name": "@waypoint-tours/runtime",
+  "version": "0.1.0",
+  "description": "Runtime del motor de tours guiados de Waypoint: máscara de enfoque, cursor animado y tooltips.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./styles.css": "./styles/tour.css"
+  },
+  "files": ["dist", "styles"],
+  "sideEffects": ["**/*.css"],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@floating-ui/dom": "^1.6.7"
+  },
+  "devDependencies": {
+    "tsup": "^8.1.0",
+    "typescript": "^5.5.3"
+  },
+  "size-limit": [
+    {
+      "path": "dist/index.js",
+      "limit": "18 KB",
+      "gzip": true
+    }
+  ]
+}

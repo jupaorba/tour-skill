@@ -1,0 +1,56 @@
+{
+  "$schema": "../../../packages/skill/schema/tour.schema.json",
+  "id": "login",
+  "specVersion": 1,
+  "title": "Cómo iniciar sesión",
+  "description": "Aprende a entrar a tu cuenta en menos de un minuto.",
+  "route": "/login",
+  "audience": "end-user",
+  "estimatedSeconds": 40,
+  "locale": "es-MX",
+  "demoMode": true,
+  "generatedBy": {
+    "agent": "hand-written",
+    "at": "2026-07-23T00:00:00Z",
+    "sourceFiles": ["src/pages/Login.tsx"]
+  },
+  "steps": [
+    {
+      "id": "intro",
+      "type": "modal",
+      "body": "Te muestro en menos de un minuto cómo entrar a tu cuenta."
+    },
+    {
+      "id": "email",
+      "type": "input",
+      "title": "Tu correo",
+      "body": "Escribe el correo con el que te registraste. Si tiene un error de dedo, te avisamos aquí mismo.",
+      "anchor": { "selector": "[data-tour=\"login.email\"]", "strategy": "data-tour" },
+      "demoValue": "persona@ejemplo.com",
+      "field": { "required": true, "validation": "Debe ser un correo válido, con arroba y dominio." }
+    },
+    {
+      "id": "password",
+      "type": "input",
+      "title": "Tu contraseña",
+      "body": "Escribe tu contraseña. Debe tener al menos 8 caracteres.",
+      "anchor": { "selector": "[data-tour=\"login.password\"]", "strategy": "data-tour" },
+      "demoValue": "Ejemplo123!",
+      "field": { "required": true, "validation": "Mínimo 8 caracteres." }
+    },
+    {
+      "id": "submit",
+      "type": "action",
+      "title": "Entra a tu cuenta",
+      "body": "Entra a tu cuenta. Si tus datos son correctos, verás tu panel al instante.",
+      "anchor": { "selector": "[data-tour=\"login.submit\"]", "strategy": "data-tour" },
+      "sideEffect": "network"
+    },
+    {
+      "id": "cierre",
+      "type": "modal",
+      "body": "Listo, ya sabes entrar. Si se te olvida algo, esta guía está siempre en Ayuda."
+    }
+  ],
+  "onFinish": { "message": "Listo, ya sabes entrar a tu cuenta." }
+}
